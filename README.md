@@ -1,3 +1,3 @@
 # ElectionManagementSystem
 
-<localhost-url>/EmSampleScreen
+Use localhost-url/EmSampleScreen
