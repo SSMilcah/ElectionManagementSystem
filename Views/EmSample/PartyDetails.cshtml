@@ -1,0 +1,23 @@
+﻿@model List<Party>
+
+<h2>Party Details</h2>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Party Id</th>
+            <th>Party Name</th>
+            <th>Image</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var party in Model)
+        {
+            <tr>
+                <td>@party.Id</td>
+                <td>@party.Name</td>
+                <td><img src="~/Images/@party.Image" alt="@party.Name" style="max-width: 100px;" /></td>
+            </tr>
+        }
+    </tbody>
+</table>

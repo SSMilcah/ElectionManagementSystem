@@ -1,0 +1,141 @@
+﻿@{
+    ViewData["Title"] = "Election Management - Sample Screen";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-3">
+            <h4>User Type</h4>
+            <select class="form-select" id="userType">
+                <option value="electionCommissioner">Election Commissioner</option>
+                <option value="voter">Voter</option>
+            </select>
+            <h4>Menu</h4>
+            <div class="list-group">
+                <a href="#" class="list-group-item list-group-item-action menu-item ec-item" id="btnShowParty">Party Details </a>
+                <a href="#" class="list-group-item list-group-item-action menu-item ec-item" id="btnShowVoters">Voter Details </a>
+                <a href="#" class="list-group-item list-group-item-action menu-item ec-item" id="btnShowVoting">Voting </a> 
+                <a href="#" class="list-group-item list-group-item-action menu-item ec-item" id="btnShowResult">Election Result </a> 
+
+                <a href="#" class="list-group-item list-group-item-action menu-item voter-item" id="btnShowVoterDetails">Voter Details </a> 
+                <a href="#" class="list-group-item list-group-item-action menu-item voter-item" id="btnShowVotingVoter">Voting</a> 
+            </div>
+        </div>
+        <div class="col-md-9">
+            <h4>Output</h4>
+            <div class="outputView" id="outputView">
+                <p id="outputText">Output will be displayed here.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    //user type change
+    document.addEventListener('DOMContentLoaded', function () {
+        var userTypeSelect = document.getElementById('userType');
+        var userType = userTypeSelect.value;
+        var ecMenuItems = document.querySelectorAll('.ec-item');
+        var voterMenuItems = document.querySelectorAll('.voter-item');
+
+        if (userType === 'electionCommissioner') {
+            ecMenuItems.forEach(function (menuItem) {
+                menuItem.style.display = 'list-item';
+            });
+            voterMenuItems.forEach(function (menuItem) {
+                menuItem.style.display = 'none';
+            });
+        } else if (userType === 'voter') {
+            ecMenuItems.forEach(function (menuItem) {
+                menuItem.style.display = 'none';
+            });
+            voterMenuItems.forEach(function (menuItem) {
+                menuItem.style.display = 'list-item';
+            });
+        }
+
+        //handle user type changes
+        userTypeSelect.addEventListener('change', function () {
+            var userType = this.value;
+            if (userType === 'electionCommissioner') {
+                ecMenuItems.forEach(function (menuItem) {
+                    menuItem.style.display = 'list-item';
+                });
+                voterMenuItems.forEach(function (menuItem) {
+                    menuItem.style.display = 'none';
+                });
+            } else if (userType === 'voter') {
+                ecMenuItems.forEach(function (menuItem) {
+                    menuItem.style.display = 'none';
+                });
+                voterMenuItems.forEach(function (menuItem) {
+                    menuItem.style.display = 'list-item';
+                });
+            }
+        });
+    });
+
+    //handle menu item clicks and update content
+    document.querySelectorAll('.menu-item').forEach(function (menuItem) {
+        menuItem.addEventListener('click', function (event) {
+            event.preventDefault();
+            var buttonText = this.textContent.trim();
+            document.getElementById('outputText').textContent = 'Loading...';
+
+            // setting API endpoint based on menu item
+            var apiUrl = '';
+            switch (buttonText) {
+                case "Party Details":
+                    apiUrl = '/api/EmSample/GetPartyDetails';
+                    break;
+                case "Voter Details":
+                    apiUrl = '/api/EmSample/GetVoterDetails';
+                    break;
+                case "Voting":
+                    apiUrl = '/api/EmSample/GetVotingData';
+                    break;
+                case "Election Result":
+                    apiUrl = '/api/EmSample/GetElectionResult';
+                    break;
+                default:
+                    break;
+            }
+            // AJAX request to API endpoint
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    var tableHtml = createTableHtml(data);
+                    document.getElementById('outputView').innerHTML = tableHtml;
+                })
+                .catch(error => {
+                    console.error('Error fetching data:', error);
+                    document.getElementById('outputText').textContent = 'Error fetching data.';
+                });
+        });
+    });
+
+    // generate HTML table from JSON data
+    function createTableHtml(data) {
+        if (!data || data.length === 0) {
+            return '<p>No data available.</p>';
+        }
+
+        var tableHtml = '<table><thead><tr>';
+        Object.keys(data[0]).forEach(key => {
+            tableHtml += `<th>${key}</th>`;
+        });
+        tableHtml += '</tr></thead><tbody>';
+
+        data.forEach(item => {
+            tableHtml += '<tr>';
+            Object.values(item).forEach(value => {
+                tableHtml += `<td>${value}</td>`;
+            });
+            tableHtml += '</tr>';
+        });
+
+        tableHtml += '</tbody></table>';
+        return tableHtml;
+    }
+</script>

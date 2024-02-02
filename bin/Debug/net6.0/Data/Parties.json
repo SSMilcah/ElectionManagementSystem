@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "name": "Party A",
+    "image": "party_a.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Party B",
+    "image": "party_b.jpg"
+  },
+  {
+    "id": 3,
+    "name": "Party C",
+    "image": "party_c.jpg"
+  }
+]
+
